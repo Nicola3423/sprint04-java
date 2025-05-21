@@ -4,9 +4,9 @@
 
 ## Integrantes do Grupo
 
-Igor Akira Bortolini Tateishi RM: 554227 
-Nicola Monte Cravo Garofalo RM: 553991 
-Willyam Santos Souza RM: 554227 
+*Igor Akira Bortolini Tateishi RM: 554227 
+*Nicola Monte Cravo Garofalo RM: 553991 
+*Willyam Santos Souza RM: 554227 
 
 ## Requisitos do Software
  
@@ -25,8 +25,3 @@ Willyam Santos Souza RM: 554227
 
 # Sistema de Gerenciamento de Médicos e Pacientes
 
-## Instalação e Configuração
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/JavaSprint02/.git
