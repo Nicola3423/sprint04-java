@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta Médica Virtual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --chat-bg-user: #F0F7FF;
+            --chat-bg-ai: #FFFFFF;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .chat-header {
+            background: linear-gradient(rgba(42, 92, 130, 0.9), rgba(91, 164, 230, 0.9)),
+            url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 0 20px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .question-box {
+            background: var(--chat-bg-ai);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .question-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        textarea {
+            border: 2px solid #dee2e6 !important;
+            border-radius: 12px !important;
+            padding: 1.25rem !important;
+            transition: var(--transition);
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        textarea:focus {
+            border-color: var(--secondary-color) !important;
+            box-shadow: 0 0 0 3px rgba(91, 164, 230, 0.2) !important;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .character-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 20px;
+            }
+
+            .chat-header {
+                padding: 2rem 1rem;
+                margin-bottom: 1rem;
+            }
+
+            textarea {
+                min-height: 120px;
+            }
+        }
+
+        /* Efeito de onda no botão */
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn-primary:active::after {
+            width: 200px;
+            height: 200px;
+            opacity: 0.3;
+            transition: all 0.5s ease-out;
+        }
+
+        /* Simulação de histórico de conversa */
+        .chat-history {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            animation: messageIn 0.4s ease-out;
+        }
+
+        .user-message {
+            background: var(--chat-bg-user);
+            border: 1px solid rgba(91, 164, 230, 0.2);
+            margin-left: 20%;
+        }
+
+        .ai-message {
+            background: var(--chat-bg-ai);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-right: 20%;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<header class="chat-header">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3"><i class="fas fa-robot me-2"></i>Consulta Virtual</h1>
+        <p class="lead mb-0">Descreva seus sintomas para receber orientação preliminar</p>
+    </div>
+</header>
+
+<div class="chat-container">
+    <!-- Histórico de conversa simulado -->
+    <div class="chat-history shadow-sm">
+        <div class="message ai-message">
+            <strong><i class="fas fa-robot text-primary me-2"></i>Assistente Virtual:</strong>
+            <p class="mb-0 mt-2">Olá! Por favor, descreva seus sintomas em detalhes para que eu possa ajudar.</p>
+        </div>
+    </div>
+
+    <div class="question-box">
+        <form th:action="@{/ai-chat}" method="post" id="chatForm">
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-comment-medical"></i>
+                    Descreva seus sintomas:
+                </label>
+                <textarea
+                        name="pergunta"
+                        class="form-control"
+                        placeholder="Ex: Estou com dor de cabeça persistente há 3 dias, acompanhada de febre de 38.5°C e mal-estar..."
+                        required
+                        oninput="updateCounter(this)"
+                        maxlength="500"></textarea>
+                <div class="character-count"><span id="charCount">0</span>/500 caracteres</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-paper-plane me-2"></i>Enviar Consulta
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Contador de caracteres
+    function updateCounter(textarea) {
+        const counter = document.getElementById('charCount');
+        counter.textContent = textarea.value.length;
+    }
+
+    // Efeito de loading no submit
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div> Processando...';
+        btn.disabled = true;
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

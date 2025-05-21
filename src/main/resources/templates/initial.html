@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{initial.title}">Página Inicial</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --accent-color: #FF6B6B;
+            --hover-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand i {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            position: relative;
+            margin: 0 12px;
+            transition: var(--hover-transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: var(--hover-transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(42, 92, 130, 0.95), rgba(91, 164, 230, 0.95)),
+            url('https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 10rem 0 8rem;
+            margin-top: 56px;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23f8f9fa' fill-opacity='1' d='M0,160L1440,32L1440,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .hero-content {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            transition: var(--hover-transition);
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            transition: var(--hover-transition);
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1);
+            color: var(--secondary-color);
+        }
+
+        .btn-access {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: var(--hover-transition);
+            border: 2px solid transparent;
+        }
+
+        .btn-access:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(91, 164, 230, 0.3);
+        }
+
+        .language-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .language-switcher .btn {
+            border-radius: 20px;
+            padding: 8px 20px;
+            margin: 0 4px;
+            transition: var(--hover-transition);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 8rem 0 6rem;
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .feature-wave {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%232a5c82' fill-opacity='0.1' d='M0,160L1440,32L1440,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-hospital"></i>
+            <span th:text="#{navbar.title}">Clínica Médica</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item" sec:authorize="hasRole('MEDICO')">
+                    <a class="nav-link" href="/medicos" th:text="#{navbar.medicos}">Médicos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pacientes" th:text="#{navbar.pacientes}">Pacientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ai-chat" th:text="#{navbar.chat}">Consulta Virtual</a>
+                </li>
+                <li class="nav-item">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-link nav-link" th:text="#{navbar.sair}">Sair</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="text-white text-center">
+    <div class="container hero-content">
+        <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeIn">
+            <span class="d-block mb-3" th:text="#{initial.welcome}">Bem-vindo ao Sistema da Clínica</span>
+            <div class="sparkle"></div>
+        </h1>
+        <div class="col-lg-8 mx-auto">
+            <p class="lead mb-0 fs-5" sec:authorize="hasRole('MEDICO')" th:text="#{initial.medico.desc}"></p>
+            <p class="lead mb-0 fs-5" sec:authorize="hasRole('PACIENTE')" th:text="#{initial.paciente.desc}"></p>
+        </div>
+    </div>
+    <div class="feature-wave"></div>
+</header>
+
+<div class="container my-5 py-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-5" sec:authorize="hasRole('MEDICO')">
+            <div class="card h-100 p-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-md card-icon"></i>
+                    <h2 class="mb-3 fw-bold" th:text="#{navbar.medicos}">Médicos</h2>
+                    <p class="text-muted mb-4" th:text="#{initial.medico.desc}">Gerencie médicos e pacientes</p>
+                    <a th:href="@{/medicos}" class="btn btn-primary btn-access">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        <span th:text="#{initial.acessar}">Acessar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-5" sec:authorize="hasAnyRole('MEDICO', 'PACIENTE')">
+            <div class="card h-100 p-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-hospital-user card-icon"></i>
+                    <h2 class="mb-3 fw-bold" th:text="#{navbar.pacientes}">Pacientes</h2>
+                    <p class="text-muted mb-4" sec:authorize="hasRole('MEDICO')" th:text="#{initial.pacientes.medico.desc}"></p>
+                    <a th:href="@{/pacientes}" class="btn btn-success btn-access">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        <span th:text="#{initial.acessar}">Acessar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seletor de Idiomas -->
+<div class="language-switcher">
+    <a href="?lang=pt_BR" class="btn btn-outline-primary">
+        <i class="fas fa-globe me-2"></i>PT
+    </a>
+    <a href="?lang=en" class="btn btn-outline-primary">
+        <i class="fas fa-globe me-2"></i>EN
+    </a>
+</div>
+
+<footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+        <div class="d-flex justify-content-center mb-3">
+            <a href="#" class="text-white mx-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-white mx-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-white mx-3"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <p class="mb-0" th:text="#{footer.copyright}">&copy; 2025 Clínica Odontológica. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

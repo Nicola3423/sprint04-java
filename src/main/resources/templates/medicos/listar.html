@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{medico.list.title}">Lista de Médicos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --hover-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+        }
+
+        .card-header h2 {
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .btn-add {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            transition: var(--hover-transition);
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91, 164, 230, 0.3);
+        }
+
+        .table {
+            --bs-table-bg: transparent;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            margin-top: -12px;
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid var(--primary-color);
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .table tbody tr {
+            background: white;
+            transition: var(--hover-transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .table tbody tr:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table tbody td {
+            padding: 1.25rem;
+            vertical-align: middle;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .table tbody td:first-child {
+            border-left: 1px solid rgba(0,0,0,0.05);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .table tbody td:last-child {
+            border-right: 1px solid rgba(0,0,0,0.05);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: var(--hover-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: rgba(91, 164, 230, 0.1);
+            color: var(--primary-color);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        footer {
+            margin-top: auto;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border-radius: 12px;
+                border: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table tbody tr {
+                display: block;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+
+            .table tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: none;
+                padding: 1rem;
+            }
+
+            .table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--primary-color);
+                margin-right: 1rem;
+            }
+
+            .table tbody td:first-child,
+            .table tbody td:last-child {
+                border-radius: 0;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#" th:text="#{navbar.title}">Clínica Médica</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/medicos" th:text="#{navbar.medicos}">Médicos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/pacientes" th:text="#{navbar.pacientes}">Pacientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}" th:text="#{navbar.sair}">Sair</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Conteúdo -->
+<div class="container">
+    <div class="table-container">
+        <div class="card shadow-lg">
+            <div class="card-header text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 th:text="#{medico.list.header}">Lista de Médicos</h2>
+                    <a th:href="@{/medicos/novo}" class="btn btn-add text-white">
+                        <i class="fas fa-plus-circle"></i>
+                        <span th:text="#{medico.list.novo}">Novo Médico</span>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th th:text="#{medico.list.tabela.id}">ID</th>
+                            <th th:text="#{medico.list.tabela.nome}">Nome</th>
+                            <th th:text="#{medico.list.tabela.email}">Email</th>
+                            <th th:text="#{medico.list.tabela.crm}">CRM</th>
+                            <th th:text="#{medico.list.tabela.acoes}">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="medicoDTO : ${medicos}" th:data-id="${medicoDTO.id}">
+                            <td data-label="ID" th:text="${medicoDTO.id}"></td>
+                            <td data-label="Nome" th:text="${medicoDTO.nome}"></td>
+                            <td data-label="Email" th:text="${medicoDTO.email}"></td>
+                            <td data-label="CRM" th:text="${medicoDTO.crm}"></td>
+                            <td data-label="Ações">
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/medicos/editar/{id}(id=${medicoDTO.id})}"
+                                       class="btn btn-action btn-edit">
+                                        <i class="fas fa-edit"></i>
+                                        <span th:text="#{medico.list.acoes.editar}">Editar</span>
+                                    </a>
+                                    <a th:href="@{/medicos/excluir/{id}(id=${medicoDTO.id})}"
+                                       class="btn btn-action btn-delete"
+                                       onclick="return confirm('Tem certeza que deseja excluir este médico?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span th:text="#{medico.list.acoes.excluir}">Excluir</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(medicos)}">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-user-md"></i>
+                                    <h4>Nenhum médico cadastrado</h4>
+                                    <p>Clique no botão "Novo Médico" para começar</p>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-white">
+    <p class="mb-0" th:text="#{footer.copyright}">&copy; 2025 Clínica Odontologica. Todos os direitos reservados.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Efeito de hover nas linhas da tabela
+    document.querySelectorAll('tbody tr[data-id]').forEach(row => {
+        row.addEventListener('click', (e) => {
+            if (!e.target.closest('a')) {
+                window.location.href = `/medicos/editar/${row.dataset.id}`;
+            }
+        });
+    });
+</script>
+</body>
+</html>

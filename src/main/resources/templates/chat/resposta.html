@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resposta da Consulta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --chat-bg-user: #F0F7FF;
+            --chat-bg-ai: #FFFFFF;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 80px 20px 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .consultation-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header i {
+            font-size: 1.4rem;
+        }
+
+        .question-section {
+            background: var(--chat-bg-user);
+            border: 1px solid rgba(91, 164, 230, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem;
+            position: relative;
+        }
+
+        .response-section {
+            background: var(--chat-bg-ai);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .response-section:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            width: 20px;
+            height: 20px;
+            background: var(--chat-bg-ai);
+            transform: rotate(45deg);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            border-left: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn-print {
+            background: #6c757d;
+            border: none;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .btn-print:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .loading-simulation {
+            display: inline-block;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loading-simulation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 60px 15px 30px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Card da Pergunta -->
+    <div class="consultation-card shadow-lg">
+        <div class="card-header text-white">
+            <i class="fas fa-user-circle"></i>
+            <h5 class="mb-0">Sua Pergunta</h5>
+        </div>
+        <div class="question-section">
+            <p class="mb-0" th:text="${pergunta}"></p>
+        </div>
+    </div>
+
+    <!-- Card da Resposta -->
+    <div class="consultation-card shadow-lg">
+        <div class="card-header text-white">
+            <i class="fas fa-robot"></i>
+            <h5 class="mb-0">Análise do Assistente Virtual</h5>
+        </div>
+        <div class="response-section">
+            <div class="response-content">
+                <!-- Simulação de estrutura de resposta -->
+                <div class="mb-4">
+                    <h6 class="text-primary mb-3"><i class="fas fa-diagnoses me-2"></i>Possível Diagnóstico</h6>
+                    <div class="loading-simulation" style="width: 70%; height: 24px; margin-bottom: 1rem;"></div>
+                    <div class="loading-simulation" style="width: 90%; height: 24px;"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="text-primary mb-3"><i class="fas fa-prescription me-2"></i>Recomendações</h6>
+                    <div th:text="${resposta}" class="recommendation-text"></div>
+                </div>
+
+                <div class="alert alert-warning mt-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Esta análise não substitui uma consulta médica presencial
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-print" onclick="window.print()">
+                    <i class="fas fa-print me-2"></i>Imprimir
+                </button>
+                <a th:href="@{/ai-chat}" class="btn btn-primary">
+                    <i class="fas fa-comment-medical me-2"></i>Nova Consulta
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
