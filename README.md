@@ -4,9 +4,9 @@
 
 ## Integrantes do Grupo
 
-*Igor Akira Bortolini Tateishi RM: 554227 
-*Nicola Monte Cravo Garofalo RM: 553991 
-*Willyam Santos Souza RM: 554227 
+-- Igor Akira Bortolini Tateishi RM: 554227 
+-- Nicola Monte Cravo Garofalo RM: 553991 
+-- Willyam Santos Souza RM: 554227 
 
 ## Requisitos do Software
  
