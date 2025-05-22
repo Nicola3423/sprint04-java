@@ -1,4 +1,4 @@
-# Projeto SPRITN04 - Gerenciamento de Pacientes
+# Projeto SPRINT04 - Gerenciamento de Pacientes
 
 ## Video: https://youtu.be/zs3cTzEeXjs
 
