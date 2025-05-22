@@ -27,3 +27,6 @@ Willyam Santos Souza RM: 554227
 
 # Sistema de Gerenciamento de Médicos e Pacientes
 
+## Descrição:
+
+Este projeto é uma aplicação Java desenvolvida com Spring Boot, utilizando JPA para persistência de dados, destinada ao gerenciamento de informações de pacientes, incluindo médicos. 
